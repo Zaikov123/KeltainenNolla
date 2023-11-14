@@ -1,13 +1,14 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include <iostream>
 #include "gameMenu.h"
+
 void InitText(sf::Text& mtext, float xpos, float ypos, const sf::String str, int size_font = 60,
     sf::Color menu_text_color = sf::Color::White, int bord = 0, sf::Color border_color = sf::Color::Black);
-//void GameStart();
-//void Options();
-//void About_Game();
-int main() {
-    //creating window with your resolution
+
+int main() 
+{
+    //creating window 
     sf::RenderWindow window;
     window.create(sf::VideoMode::getDesktopMode(), L"Keltain Nolla", sf::Style::Fullscreen);
 
@@ -18,7 +19,7 @@ int main() {
     //background
     sf::RectangleShape background(sf::Vector2f(width, height));
     sf::Texture texture_window;
-    
+
     if (!texture_window.loadFromFile("resources/images/mainMenu.jpg")) {
         return 1;
     }
@@ -26,22 +27,12 @@ int main() {
 
     //font for screen name
     sf::Font font;
-    if (!font.loadFromFile("GhastlyPanicCyr.otf")) return 2;
+    if (!font.loadFromFile("MorrisRomanAlternate-Black.ttf")) return 2;
 
     sf::Text Titul;
-    Titul.setFont(font);
+    Titul.setFont(font); 
 
-    //name menu buttons
-    sf::String name_menu[4]{ L"Start",L"Options",L"About game", L"Exit"};
-
-    //menu object
-    game::GameMenu mymenu(window, 950, 350, name_menu, 100, 120);
-
-    //set color for menu text
-    mymenu.setColorTextMenu(sf::Color(237, 147, 0), sf::Color::Red, sf::Color::Black);
-    mymenu.AlignMenu(2);
-
-    InitText(Titul, 480 , 50, L"Keltainen Nolla", 150, sf::Color(237, 147, 0), 3);
+    InitText(Titul, 480, 50, L"Keltainen Nolla", 150, sf::Color(237, 147, 0), 3);
 
     //splash
     sf::RectangleShape splash(sf::Vector2f(width, height));
@@ -76,7 +67,7 @@ int main() {
     }
 
     sf::Sound buttonClickSound;
-    buttonClickSound.setBuffer(buttonClickBuffer); 
+    buttonClickSound.setBuffer(buttonClickBuffer);
 
     //background music
     sf::Music backgroundMusic;
@@ -92,25 +83,127 @@ int main() {
     sf::Clock clock;
     float splashDisplayTime = 5.0f;
 
+    // get volume for options
+    int soundVolume = buttonHoverSound.getVolume();
+    int musicVolume = backgroundMusic.getVolume();
 
-    while (window.isOpen()) {
+    //name menu buttons
+    sf::String curr_menu[1]{ L"Util" };
+    sf::String name_menu[4]{ L"Start",L"Options",L"About game", L"Exit" };
+    sf::String name_options_menu[4]{ L"Video",L"Audio",L"controls", L"Back" };
+    sf::String name_audio_menu[3]{ L"Sound Volume",L"Music Volume",L"Back" };
+    sf::String name_video_menu[3]{ L"Fullscreen / Windowed",L"Resolution",L"Back" };
+
+    //menu object
+    game::GameMenu currentmenu(window, 950, 350, name_menu, 4, 100, 120);
+
+    game::GameMenu mainmenu(window, 950, 350, name_menu, 4, 100, 120);
+    mainmenu.setColorTextMenu(sf::Color(237, 147, 0), sf::Color::Red, sf::Color::Black);
+    mainmenu.AlignMenu(2);
+
+    game::GameMenu optionsmenu(window, 950, 350, name_options_menu, 4, 100, 120);
+    optionsmenu.setColorTextMenu(sf::Color(237, 147, 0), sf::Color::Red, sf::Color::Black);
+    optionsmenu.AlignMenu(2);
+
+    game::GameMenu audiomenu(window, 950, 350, name_audio_menu, 3, 100, 120);
+    audiomenu.setColorTextMenu(sf::Color(237, 147, 0), sf::Color::Red, sf::Color::Black);
+    audiomenu.AlignMenu(2);
+
+    game::GameMenu videomenu(window, 950, 350, name_video_menu, 3, 100, 120);
+    videomenu.setColorTextMenu(sf::Color(237, 147, 0), sf::Color::Red, sf::Color::Black);
+    videomenu.AlignMenu(2);
+
+    // for change fullscreen/windowed
+    sf::VideoMode fullscreenMode = sf::VideoMode::getFullscreenModes()[0];
+    bool isFullscreen = (window.getSize().x == fullscreenMode.width && window.getSize().y == fullscreenMode.height);
+
+    while (window.isOpen()) 
+    {
         sf::Event event;
         while (window.pollEvent(event))
         {
+
             if (event.type == sf::Event::KeyReleased)
             {
-                if (event.key.code == sf::Keyboard::Up) { mymenu.MoveUp(); buttonHoverSound.play();}
-                if (event.key.code == sf::Keyboard::Down) { mymenu.MoveDown(); buttonHoverSound.play();}
-                if (event.key.code == sf::Keyboard::Return)
-                {
-                    switch (mymenu.getSelectedMenuNumber())
-                    {
-                    case 0: /*GameStart();*/  break;
-                    case 1: /*Options();  */  break;
-                    case 2: /*About_Game();*/ break;
-                    case 3: window.close();   break;
+                if (currentmenu.getCurrentState() == MainMenu) {
+                    if (event.key.code == sf::Keyboard::Up) { mainmenu.MoveUp(); buttonHoverSound.play(); }
+                    if (event.key.code == sf::Keyboard::Down) { mainmenu.MoveDown(); buttonHoverSound.play(); }
+                    if (event.key.code == sf::Keyboard::Return) {
+                        switch (mainmenu.getSelectedMenuNumber()) {
+                        case 0: /*GameStart();*/  break; //Start
+                        case 1: currentmenu.SetState(OptionsMenu); break; //Options
+                        case 2: /*About_Game();*/ break; //About game
+                        case 3: window.close(); break; //Exit
+                        }
+                        buttonClickSound.play();
                     }
-                    buttonClickSound.play();
+                }
+                else if (currentmenu.getCurrentState() == OptionsMenu) {
+                    if (event.key.code == sf::Keyboard::Up) { optionsmenu.MoveUp(); buttonHoverSound.play(); }
+                    if (event.key.code == sf::Keyboard::Down) { optionsmenu.MoveDown(); buttonHoverSound.play(); }
+                    if (event.key.code == sf::Keyboard::Return) {
+                        switch (optionsmenu.getSelectedMenuNumber()) {
+                        case 0: currentmenu.SetState(VideoOptions); break; // Video
+                        case 1: currentmenu.SetState(AudioOptions); break; // Audio
+                        case 2: /*About_Game();*/ break; // Controls
+                        case 3: currentmenu.SetState(MainMenu); break; // Exit
+                        }
+                        buttonClickSound.play();
+                    }
+                }
+                else if (currentmenu.getCurrentState() == AudioOptions) {
+                    if (event.key.code == sf::Keyboard::Up) { audiomenu.MoveUp(); buttonHoverSound.play(); }
+                    if (event.key.code == sf::Keyboard::Down) { audiomenu.MoveDown(); buttonHoverSound.play(); }
+                    // Sound options
+                    if (event.key.code == sf::Keyboard::Left) {
+                        switch (audiomenu.getSelectedMenuNumber()) {
+                        case 0:
+                            soundVolume > 0 ? soundVolume -= 5 : 0;
+                            audiomenu.soundVolumeText.setString("Sound Volume: " + std::to_string(soundVolume) + "%");
+                            break;
+                        case 1:
+                            musicVolume > 0 ? musicVolume -= 5 : 0;
+                            audiomenu.musicVolumeText.setString("Music Volume: " + std::to_string(musicVolume) + "%");
+                            break;
+                        }
+                        buttonClickSound.play();
+                    }
+
+                    if (event.key.code == sf::Keyboard::Right) {
+                        switch (audiomenu.getSelectedMenuNumber()) {
+                        case 0:
+                            soundVolume < 100 ? soundVolume += 5 : 0;
+                            audiomenu.soundVolumeText.setString("Sound Volume: " + std::to_string(soundVolume) + "%");
+                            break;
+                        case 1:
+                            musicVolume < 100 ? musicVolume += 5 : 0;
+                            audiomenu.musicVolumeText.setString("Music Volume: " + std::to_string(musicVolume) + "%");
+                            break;
+                        }
+                        buttonClickSound.play();
+                    }
+
+                    if (event.key.code == sf::Keyboard::Return) {
+                        switch (audiomenu.getSelectedMenuNumber()) {
+                        case 0: break; // Sound Volume
+                        case 1: break; // Music Volume
+                        case 2: currentmenu.SetState(OptionsMenu);  break; // exit
+                        }
+                        buttonClickSound.play();
+                    }
+                }
+                else if (currentmenu.getCurrentState() == VideoOptions) {
+                    if (event.key.code == sf::Keyboard::Up) { videomenu.MoveUp(); buttonHoverSound.play(); }
+                    if (event.key.code == sf::Keyboard::Down) { videomenu.MoveDown(); buttonHoverSound.play(); }
+                    if (event.key.code == sf::Keyboard::Return) {
+                        switch (videomenu.getSelectedMenuNumber()) {
+                        case 0: window.create(isFullscreen ? sf::VideoMode(800, 600) : sf::VideoMode::getDesktopMode(), "SFML Window", isFullscreen ? sf::Style::Default : sf::Style::Fullscreen); 
+                        break; // Full screen / windowed
+                        case 1: break; // Resolution
+                        case 2: currentmenu.SetState(OptionsMenu); break; // back
+                        }
+                        buttonClickSound.play();
+                    }
                 }
             }
         }
@@ -123,20 +216,24 @@ int main() {
                 clock.restart();
             }
         }
-        else {
-            
+        else { 
             window.draw(background);
             window.draw(Titul);
-            mymenu.draw();
+            if(currentmenu.getCurrentState() == MainMenu){ mainmenu.draw(false); }
+            else if (currentmenu.getCurrentState() == OptionsMenu)  { optionsmenu.draw(false);}
+            else if (currentmenu.getCurrentState() == AudioOptions) { audiomenu.draw(true);   }        
+            else if (currentmenu.getCurrentState() == VideoOptions) { videomenu.draw(false);  }
         }
+        
+        buttonHoverSound.setVolume(soundVolume);
+        buttonClickSound.setVolume(soundVolume);
+
+        backgroundMusic.setVolume(musicVolume);
+
+
 
         window.display();
     }
-
-
-
-
-    return 0;
 }
 
 void InitText(sf::Text & mtext, float xpos, float ypos, const sf::String str, int size_font, sf::Color menu_text_color, int bord, sf::Color border_color){
@@ -148,63 +245,3 @@ void InitText(sf::Text & mtext, float xpos, float ypos, const sf::String str, in
     mtext.setOutlineColor(border_color);
 
 }
-/* На очень потом реализовать отклик на кнопки
-void GameStart()
-{
-    sf::RenderWindow Play(sf::VideoMode::getDesktopMode(), L"Level 1", sf::Style::Fullscreen);
-
-
-    sf::RectangleShape background_play(sf::Vector2f(1920, 1080));
-
-    sf::Texture texture_play;
-    if (!texture_play.loadFromFile("image/menu4.jpg")) exit(1);
-    background_play.setTexture(&texture_play);
-
-    while (Play.isOpen())
-    {
-        sf::Event event_play;
-        while (Play.pollEvent(event_play))
-        {
-            if (event_play.type == sf::Event::KeyPressed)
-            {
-                if (event_play.key.code == sf::Keyboard::Escape) { Play.close(); }
-            }
-        }
-        Play.clear();
-        Play.draw(background_play);
-        Play.display();
-    }
-}
-
-void Options()
-{
-    sf::RenderWindow Options(sf::VideoMode::getDesktopMode(), L"Options", sf::Style::Fullscreen);
-
-    sf::RectangleShape background_opt(sf::Vector2f(1920, 1080));
-    sf::Texture texture_opt;
-    if (!texture_opt.loadFromFile("image/menu1.jpg")) exit(2);
-
-    background_opt.setTexture(&texture_opt);
-    while (Options.isOpen())
-    {
-        sf::Event event_opt;
-        while (Options.pollEvent(event_opt))
-        {
-            if (event_opt.type == sf::Event::Closed) Options.close();
-            if (event_opt.type == sf::Event::KeyPressed)
-            {
-                if (event_opt.key.code == sf::Keyboard::Escape) Options.close();
-            }
-        }
-        Options.clear();
-        Options.draw(background_opt);
-        Options.display();
-    }
-
-}
-
-void About_Game(){
-
-}
-
-*/

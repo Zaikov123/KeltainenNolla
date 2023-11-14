@@ -171,6 +171,7 @@ winmm.lib</AdditionalDependencies>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameMenu.h" />
+    <ClInclude Include="gameState.hpp" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

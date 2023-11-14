@@ -1,5 +1,10 @@
 ﻿  main.cpp
-D:\sisya\KeltainenNolla\main.cpp(15,17): warning C4244: 'initializing': conversion from 'unsigned int' to 'float', possible loss of data
-D:\sisya\KeltainenNolla\main.cpp(16,18): warning C4244: 'initializing': conversion from 'unsigned int' to 'float', possible loss of data
-D:\sisya\KeltainenNolla\main.cpp(147,31): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\sisya\KeltainenNolla\main.cpp(20,17): warning C4244: 'initializing': conversion from 'unsigned int' to 'float', possible loss of data
+D:\sisya\KeltainenNolla\main.cpp(21,18): warning C4244: 'initializing': conversion from 'unsigned int' to 'float', possible loss of data
+D:\sisya\KeltainenNolla\main.cpp(91,21): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+D:\sisya\KeltainenNolla\main.cpp(92,21): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+D:\sisya\KeltainenNolla\main.cpp(232,36): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\sisya\KeltainenNolla\main.cpp(233,36): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\sisya\KeltainenNolla\main.cpp(235,35): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\sisya\KeltainenNolla\main.cpp(248,31): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   KeltainenNolla.vcxproj -> D:\sisya\KeltainenNolla\x64\Debug\KeltainenNolla.exe

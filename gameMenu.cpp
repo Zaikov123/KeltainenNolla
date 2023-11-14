@@ -38,6 +38,11 @@ void game::GameMenu::AlignMenu(int posx)
 
 }
 
+void game::GameMenu::SetState(GameState state)
+{
+	currentState = state;
+}
+
 void game::GameMenu::MoveUp()
 {
 	mainMenuSelected--;
@@ -72,23 +77,33 @@ void game::GameMenu::MoveDown()
 }
 
 
-game::GameMenu::GameMenu(sf::RenderWindow& window, float menux, float menuy, sf::String name[], int sizeFont, int step)
-	:mywindow(window), menu_X(menux), menu_Y(menuy), size_font(sizeFont), menu_Step(step)
+game::GameMenu::GameMenu(sf::RenderWindow& window, float menux, float menuy, sf::String name[], int arraySize, int sizeFont, int step)
+	: mywindow(window), menu_X(menux), menu_Y(menuy), size_font(sizeFont), menu_Step(step)
 {
-	if (!font.loadFromFile("GhastlyPanicCyr.otf")) exit(32);
-	max_menu = name->getSize() - 1;
-	mainMenu = new sf::Text[name->getSize()];
+	if (!font.loadFromFile("MorrisRomanAlternate-Black.ttf")) exit(32);
+	max_menu = arraySize;
+
+	mainMenu = new sf::Text[arraySize];
 
 	for (int i = 0, ypos = menu_Y; i < max_menu; i++, ypos += menu_Step)
 		setInitText(mainMenu[i], name[i], menu_X, ypos);
 	mainMenuSelected = 0;
 	mainMenu[mainMenuSelected].setFillColor(sf::Color::Yellow);
+	setInitText(soundVolumeText, L"Sound Volume: 100%", menu_X, menu_Y);
+	setInitText(musicVolumeText, L"Music Volume: 100%", menu_X, menu_Y + size_font + 5);
 }
 
-void game::GameMenu::draw()
+
+void game::GameMenu::draw(bool isDrawVolumeBar)
 {
-	for (int i = 0; i < max_menu; i++) mywindow.draw(mainMenu[i]);
+	for (int i = 0; i < max_menu; i++)
+		mywindow.draw(mainMenu[i]);
+	if (isDrawVolumeBar) {
+		mywindow.draw(soundVolumeText); 
+		mywindow.draw(musicVolumeText);
+	}
 }
+
 
 void game::GameMenu::setColorTextMenu(sf::Color menColor, sf::Color ChoColor, sf::Color BordColor)
 {

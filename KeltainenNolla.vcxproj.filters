@@ -29,6 +29,9 @@
     <ClInclude Include="gameMenu.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="gameState.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="KeltainenNolla.rc">
